@@ -104,7 +104,7 @@ namespace NuGet.PackageManagement.UI
         public PackageItemListViewModel SelectedPackageItem => _list.SelectedItem as PackageItemListViewModel;
 
         // Load items using the specified loader
-        internal void LoadItems(
+        internal async Task LoadItemsAsync(
             IPackageItemLoader loader,
             string loadingMessage,
             INuGetUILogger logger,
@@ -136,16 +136,12 @@ namespace NuGet.PackageManagement.UI
             _loadingStatusBar.Reset(loadingMessage, loader.IsMultiSource);
 
             var selectedPackageItem = SelectedPackageItem;
-            _list.ItemsLock.Wait();
 
-            try
+            await _list.ItemsLock.ExecuteAsync(() =>
             {
                 ClearPackageList();
-            }
-            finally
-            {
-                _list.ItemsLock.Release();
-            }
+                return Task.CompletedTask;
+            });
 
             _selectedCount = 0;
 
@@ -357,16 +353,11 @@ namespace NuGet.PackageManagement.UI
 
                     if (!Items.Contains(_loadingStatusIndicator))
                     {
-                        await _list.ItemsLock.WaitAsync();
-
-                        try
+                        await _list.ItemsLock.ExecuteAsync(() =>
                         {
                             Items.Add(_loadingStatusIndicator);
-                        }
-                        finally
-                        {
-                            _list.ItemsLock.Release();
-                        }
+                            return Task.CompletedTask;
+                        });
                     }
                 }
             });
@@ -404,9 +395,7 @@ namespace NuGet.PackageManagement.UI
             _joinableTaskFactory.Value.Run(async () =>
             {
                 // Synchronize updating Items list
-                await _list.ItemsLock.WaitAsync();
-
-                try
+                await _list.ItemsLock.ExecuteAsync(() =>
                 {
                     // remove the loading status indicator if it's in the list
                     Items.Remove(_loadingStatusIndicator);
@@ -425,11 +414,9 @@ namespace NuGet.PackageManagement.UI
                     }
 
                     Items.Add(_loadingStatusIndicator);
-                }
-                finally
-                {
-                    _list.ItemsLock.Release();
-                }
+
+                    return Task.CompletedTask;
+                });
             });
         }
 

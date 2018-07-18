@@ -20,15 +20,20 @@ namespace NuGet.PackageManagement.UI
                 return new List<AutomationPeer>();
             }
 
-            return NuGetUIThreadHelper.JoinableTaskFactory.Run(async () =>
+            List<AutomationPeer> value = null;
+
+            NuGetUIThreadHelper.JoinableTaskFactory.Run(async () =>
             {
-                await infiniteScrollListBox.ItemsLock.ExecuteAsync(
-                    delegate
-                    {
+                await infiniteScrollListBox.ItemsLock.ExecuteAsync(() =>
+                {
                     // Don't return the LoadingStatusIndicator as an AutomationPeer, otherwise narrator will report it as an item in the list of packages, even when not visible
-                    var sd = base.GetChildrenCore()?.Where(lbiap => !(((ListBoxItemAutomationPeer)lbiap).Item is LoadingStatusIndicator)).ToList() ?? new List<AutomationPeer>();
+                    value = base.GetChildrenCore()?.Where(lbiap => !(((ListBoxItemAutomationPeer)lbiap).Item is LoadingStatusIndicator)).ToList() ?? new List<AutomationPeer>();
+
+                    return Task.CompletedTask;
                 });
             });
+
+            return value;
         }
     }
 }

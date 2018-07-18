@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Automation.Peers;
 using System.Windows.Controls;
 using NuGet.VisualStudio;
@@ -21,10 +22,11 @@ namespace NuGet.PackageManagement.UI
 
             return NuGetUIThreadHelper.JoinableTaskFactory.Run(async () =>
             {
-                await infiniteScrollListBox.ItemsLock.ExecuteAsync(() =>
-                {
+                await infiniteScrollListBox.ItemsLock.ExecuteAsync(
+                    delegate
+                    {
                     // Don't return the LoadingStatusIndicator as an AutomationPeer, otherwise narrator will report it as an item in the list of packages, even when not visible
-                    return base.GetChildrenCore()?.Where(lbiap => !(((ListBoxItemAutomationPeer)lbiap).Item is LoadingStatusIndicator)).ToList() ?? new List<AutomationPeer>();
+                    var sd = base.GetChildrenCore()?.Where(lbiap => !(((ListBoxItemAutomationPeer)lbiap).Item is LoadingStatusIndicator)).ToList() ?? new List<AutomationPeer>();
                 });
             });
         }

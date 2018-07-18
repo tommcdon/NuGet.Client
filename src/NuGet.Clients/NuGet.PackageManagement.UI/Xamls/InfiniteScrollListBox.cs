@@ -12,7 +12,7 @@ namespace NuGet.PackageManagement.UI
             ReentrantSemaphore.Create(
                 initialCount: 1,
                 joinableTaskContext: NuGetUIThreadHelper.JoinableTaskFactory.Context,
-                mode: ReentrantSemaphore.ReentrancyMode.Freeform);
+                mode: ReentrantSemaphore.ReentrancyMode.Stack);
 
         protected override AutomationPeer OnCreateAutomationPeer()
         {

@@ -10,12 +10,20 @@ using Moq;
 using NuGet.PackageManagement.VisualStudio;
 using NuGet.ProjectManagement;
 using NuGet.Protocol.Core.Types;
+using NuGet.VisualStudio;
 using Xunit;
 
 namespace NuGet.PackageManagement.UI.Test
 {
     public class InfiniteScrollListTests
     {
+        public InfiniteScrollListTests()
+        {
+            var joinableTaskContext = new JoinableTaskContext(Thread.CurrentThread, SynchronizationContext.Current);
+
+            NuGetUIThreadHelper.SetCustomJoinableTaskFactory(joinableTaskContext.Factory);
+        }
+
         [WpfFact]
         public void Constructor_JoinableTaskFactoryIsNull_Throws()
         {

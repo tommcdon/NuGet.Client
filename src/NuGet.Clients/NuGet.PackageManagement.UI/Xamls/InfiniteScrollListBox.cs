@@ -8,11 +8,7 @@ namespace NuGet.PackageManagement.UI
 { 
     internal class InfiniteScrollListBox : ListBox
     {
-        public readonly ReentrantSemaphore ItemsLock =
-            ReentrantSemaphore.Create(
-                initialCount: 1,
-                joinableTaskContext: NuGetUIThreadHelper.JoinableTaskFactory.Context,
-                mode: ReentrantSemaphore.ReentrancyMode.Stack);
+        public ReentrantSemaphore ItemsLock { get; set; }
 
         protected override AutomationPeer OnCreateAutomationPeer()
         {

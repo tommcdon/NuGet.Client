@@ -67,6 +67,11 @@ namespace NuGet.PackageManagement.UI
 
             InitializeComponent();
 
+            _list.ItemsLock = ReentrantSemaphore.Create(
+                initialCount: 1,
+                joinableTaskContext: _joinableTaskFactory.Value.Context,
+                mode: ReentrantSemaphore.ReentrancyMode.Stack);
+
             BindingOperations.EnableCollectionSynchronization(Items, _list.ItemsLock);
 
             DataContext = Items;

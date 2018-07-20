@@ -1,4 +1,4 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
@@ -133,7 +133,7 @@ namespace NuGet.Resolver
 
             var limit = 0;
 
-            while (true)
+            while (0 <= i && i < _solution.Length)
             {
                 if (!consistent)
                 {
@@ -155,22 +155,22 @@ namespace NuGet.Resolver
                     // create a new list since this method reuses the solution array
                     diagnosticOutput(new List<T>(_solution));
                 }
+            }
 
-                if (i > _solution.Length)
-                {
-                    Debug.Fail("Evaluated past the end of the array.");
+            if (i > _solution.Length)
+            {
+                Debug.Fail("Evaluated past the end of the array.");
 
-                    throw new NuGetResolverException(Strings.FatalError);
-                }
-                else if (i == _solution.Length)
-                {
-                    return _solution;
-                }
-                else if (i < 0)
-                {
-                    // Impossible (no solution)
-                    return null;
-                }
+                throw new NuGetResolverException(Strings.FatalError);
+            }
+            else if (i == _solution.Length)
+            {
+                return _solution;
+            }
+            else // i < 0
+            {
+                // Impossible (no solution)
+                return null;
             }
         }
 

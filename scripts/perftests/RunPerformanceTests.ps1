@@ -64,14 +64,15 @@ Param(
         {
             $logs = . $nugetClient restore $solutionFilePath -noninteractive $forceArg
         }
-        Log $logs
+        
+        # Log $logs
         $end=Get-Date
         $totalTime=$end-$start
 
-        if(!$logsPath)
+        if($logsPath)
         {
-            $logFile = [System.IO.Path]::Combine($logsPath, "restoreLog-$([System.IO.Path]::GetFileNameWithoutExtension($solutionFilePath))-$(get-date -f yyyyMMddTHHmmssffff).txt")
-            OutFileWithCreateFolders $logFile $logs
+            # $logFile = [System.IO.Path]::Combine($logsPath, "restoreLog-$([System.IO.Path]::GetFileNameWithoutExtension($solutionFilePath))-$(get-date -f yyyyMMddTHHmmssffff).txt")
+            OutFileWithCreateFolders $logsPath $logs
         }
 
         $globalPackagesFolder = $Env:NUGET_PACKAGES
@@ -167,6 +168,9 @@ Param(
     }
 
     $uniqueRunID = Get-Date -f d-m-y-h:m:s
+
+    Log "SetUp Environment variables"
+    SetupNuGetFolders $nugetClientPath
 
     Log "Running 1x warmup restore"
     RunRestore $solutionPath $nugetClientPath $resultsFilePath $logsPath "warmup" $uniqueRunID -cleanGlobalPackagesFolder -cleanHttpCache -cleanPluginsCache -killMSBuildAndDotnetExeProcess -force

@@ -210,7 +210,6 @@
         $solutionFilePath = SetupGitRepository $repoUrl $commitHash $([System.IO.Path]::Combine($sourceRootDirectory, $repoName))
 
         $resultsFilePath = [System.IO.Path]::Combine($resultsDirPath, "$repoName.csv")
-        SetupNuGetFolders $nugetClient
 
         . "$PSScriptRoot\RunPerformanceTests.ps1" $nugetClient $solutionFilePath $resultsFilePath $logsPath
     }

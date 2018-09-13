@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using NuGet.Common;
 using NuGet.Packaging;
 using NuGet.Protocol;
@@ -161,22 +162,27 @@ namespace NuGet.Repositories
                         continue;
                     }
 
+                    var nupkgMetadataPath = PathResolver.GetNupkgMetadataPath(id, version);
                     var hashPath = PathResolver.GetHashPath(id, version);
+                    var zipPath = PathResolver.GetPackageFilePath(id, version);
+                    var installPath = PathResolver.GetInstallPath(id, version);
 
                     // The hash file is written last. If this file does not exist then the package is
                     // incomplete and should not be used.
-                    if (_packageFileCache.Sha512Exists(hashPath))
+                    if (_packageFileCache.Sha512Exists(nupkgMetadataPath))
                     {
-                        var manifestPath = PathResolver.GetManifestFilePath(id, version);
-                        var zipPath = PathResolver.GetPackageFilePath(id, version);
-                        var sha512Path = PathResolver.GetHashPath(id, version);
+                        package = CreateLocalPackageInfo(id, version, fullVersionDir, nupkgMetadataPath, zipPath);
 
-                        var nuspec = _packageFileCache.GetOrAddNuspec(manifestPath, fullVersionDir);
-                        var files = _packageFileCache.GetOrAddFiles(fullVersionDir);
-                        var sha512 = _packageFileCache.GetOrAddSha512(hashPath);
-                        var runtimeGraph = _packageFileCache.GetOrAddRuntimeGraph(fullVersionDir);
+                        // Cache the package, if it is valid it will not change
+                        // for the life of this restore.
+                        // Locking is done at a higher level around the id
+                        _packageCache.TryAdd(fullVersionDir, package);
+                    }
+                    else if(_packageFileCache.Sha512Exists(hashPath))
+                    {
+                        LocalFolderUtility.GenerateNupkgMetadataFile(zipPath, installPath, hashPath, nupkgMetadataPath);
 
-                        package = new LocalPackageInfo(id, version, fullVersionDir, manifestPath, zipPath, sha512Path, nuspec, files, sha512, runtimeGraph);
+                        package = CreateLocalPackageInfo(id, version, fullVersionDir, nupkgMetadataPath, zipPath);
 
                         // Cache the package, if it is valid it will not change
                         // for the life of this restore.
@@ -193,6 +199,17 @@ namespace NuGet.Repositories
             }
 
             return packages;
+        }
+
+        private LocalPackageInfo CreateLocalPackageInfo(string id, NuGetVersion version, string fullVersionDir, string newHashPath, string zipPath)
+        {
+            var manifestPath = PathResolver.GetManifestFilePath(id, version);
+            var nuspec = _packageFileCache.GetOrAddNuspec(manifestPath, fullVersionDir);
+            var files = _packageFileCache.GetOrAddFiles(fullVersionDir);
+            var sha512 = _packageFileCache.GetOrAddSha512(newHashPath);
+            var runtimeGraph = _packageFileCache.GetOrAddRuntimeGraph(fullVersionDir);
+
+            return new LocalPackageInfo(id, version, fullVersionDir, manifestPath, zipPath, newHashPath, nuspec, files, sha512, runtimeGraph);
         }
 
         /// <summary>

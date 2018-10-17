@@ -606,5 +606,7 @@ namespace NuGet.Packaging
         /// <param name="token"></param>
         /// <returns></returns>
         public abstract string GetContentHashForPackage(CancellationToken token);
+
+        public abstract bool CanVerifySignedPackages(SignedPackageVerifierSettings verifierSettings);
     }
 }

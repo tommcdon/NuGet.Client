@@ -593,6 +593,18 @@ namespace NuGet.Packaging
 
         public abstract Task<byte[]> GetArchiveHashAsync(HashAlgorithmName hashAlgorithm, CancellationToken token);
 
+        /// <summary>
+        /// Get contentHash for a signed package.
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns>null if the package is not signed</returns>
         public abstract string GetContentHashForSignedPackage(CancellationToken token);
+
+        /// <summary>
+        /// Get contenthash for a package.
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public abstract string GetContentHashForPackage(CancellationToken token);
     }
 }

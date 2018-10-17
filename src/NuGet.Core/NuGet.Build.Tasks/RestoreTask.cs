@@ -138,7 +138,7 @@ namespace NuGet.Build.Tasks
             }
 
             // Set user agent and connection settings.
-            ConfigureProtocol();
+            ConfigureProtocol(log);
 
             // Convert to the internal wrapper
             var wrappedItems = RestoreGraphItems.Select(MSBuildUtility.WrapMSBuildItem);
@@ -205,16 +205,17 @@ namespace NuGet.Build.Tasks
                 return restoreSummaries.All(x => x.Success);
             }
         }
-        private static void ConfigureProtocol()
+
+        private static void ConfigureProtocol(Common.ILogger log)
         {
             // Set connection limit
-            NetworkProtocolUtility.SetConnectionLimit();
+            NetworkProtocolUtility.SetConnectionLimit(log);
 
             // Set user agent string used for network calls
             SetUserAgent();
 
             // This method has no effect on .NET Core.
-            NetworkProtocolUtility.ConfigureSupportedSslProtocols();
+            NetworkProtocolUtility.ConfigureSupportedSslProtocols(log);
         }
 
         private static void SetUserAgent()

@@ -1,4 +1,4 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
@@ -39,16 +39,16 @@ namespace NuGet.CommandLine.XPlat
             return level;
         }
 
-        public static void ConfigureProtocol()
+        public static void ConfigureProtocol(ILogger log)
         {
             // Set connection limit
-            NetworkProtocolUtility.SetConnectionLimit();
+            NetworkProtocolUtility.SetConnectionLimit(log);
 
             // Set user agent string used for network calls
             SetUserAgent();
 
             // This method has no effect on .NET Core.
-            NetworkProtocolUtility.ConfigureSupportedSslProtocols();
+            NetworkProtocolUtility.ConfigureSupportedSslProtocols(log);
         }
 
         public static void SetUserAgent()

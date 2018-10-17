@@ -64,12 +64,12 @@ namespace NuGet.CommandLine.XPlat
             TryParseVerbosity(args, verbosity, out logLevel);
             log.LogLevel = logLevel;
 
-            NetworkProtocolUtility.SetConnectionLimit();
+            NetworkProtocolUtility.SetConnectionLimit(log);
 
             XPlatUtility.SetUserAgent();
 
             // This method has no effect on .NET Core.
-            NetworkProtocolUtility.ConfigureSupportedSslProtocols();
+            NetworkProtocolUtility.ConfigureSupportedSslProtocols(log);
 
             // Register commands
             RegisterCommands(app, log);

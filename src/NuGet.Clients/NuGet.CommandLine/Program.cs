@@ -82,18 +82,8 @@ namespace NuGet.CommandLine
                 SetConsoleOutputEncoding(Encoding.UTF8);
             }
 
-            // Increase the maximum number of connections per server.
-            if (!RuntimeEnvironmentHelper.IsMono)
-            {
-                ServicePointManager.DefaultConnectionLimit = 64;
-            }
-            else
-            {
-                // Keep mono limited to a single download to avoid issues.
-                ServicePointManager.DefaultConnectionLimit = 1;
-            }
-
-            NetworkProtocolUtility.ConfigureSupportedSslProtocols();
+            NetworkProtocolUtility.SetConnectionLimit(NullLogger.Instance);
+            NetworkProtocolUtility.ConfigureSupportedSslProtocols(NullLogger.Instance);
 
             var console = new Console();
             var fileSystem = new CoreV2.NuGet.PhysicalFileSystem(workingDirectory);

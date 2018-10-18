@@ -273,6 +273,11 @@ namespace NuGet.Protocol.Tests
                 throw new NotImplementedException();
             }
 
+            public override bool CanVerifySignedPackages(SignedPackageVerifierSettings verifierSettings)
+            {
+                return false;
+            }
+
             protected override void Dispose(bool disposing)
             {
             }

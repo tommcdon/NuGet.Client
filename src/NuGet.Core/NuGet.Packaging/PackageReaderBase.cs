@@ -605,6 +605,6 @@ namespace NuGet.Packaging
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
-        public abstract string GetContentHashForPackage(CancellationToken token);
+        public abstract string GetContentHash(CancellationToken token);
     }
 }

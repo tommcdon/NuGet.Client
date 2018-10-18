@@ -333,7 +333,7 @@ namespace NuGet.PackageManagement
 
                     // calculate contentHash to verify we got the package correctly.
                     var packageArchiveReader = new PackageArchiveReader(targetPackageStream);
-                    var contentHash = packageArchiveReader.GetContentHashForPackage(new CancellationToken());
+                    var contentHash = packageArchiveReader.GetContentHash(new CancellationToken());
 
                     // Assert
                     // jQuery.1.8.2 has the following contentHash:
@@ -377,7 +377,7 @@ namespace NuGet.PackageManagement
 
                     // calculate contentHash to verify we got the package correctly.
                     var packageArchiveReader = new PackageArchiveReader(targetPackageStream);
-                    var contentHash = packageArchiveReader.GetContentHashForSignedPackage(new CancellationToken());
+                    var contentHash = packageArchiveReader.GetContentHash(new CancellationToken());
 
                     // Assert
                     // jQuery.1.8.2 has the following contentHash:
@@ -632,7 +632,7 @@ namespace NuGet.PackageManagement
 
                     // calculate contentHash to verify we got the package correctly.
                     var packageArchiveReader = new PackageArchiveReader(targetPackageStream);
-                    var contentHash = packageArchiveReader.GetContentHashForPackage(new CancellationToken());
+                    var contentHash = packageArchiveReader.GetContentHash(new CancellationToken());
 
                     // Assert
                     // jQuery.1.8.2 has the following contentHash:

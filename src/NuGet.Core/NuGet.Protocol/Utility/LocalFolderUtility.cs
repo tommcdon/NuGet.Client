@@ -928,13 +928,14 @@ namespace NuGet.Protocol
             // Check for package files one level deep.
             DirectoryInfo rootDirectoryInfo = GetAndVerifyRootDirectory(root);
 
-            var pathResolver = new VersionFolderPathResolver(rootDirectoryInfo.FullName);
-            var idRoot = new DirectoryInfo(pathResolver.GetVersionListPath(id));
+            var idRoot = new DirectoryInfo(Path.Combine(rootDirectoryInfo.FullName, id));
             if (!idRoot.Exists)
             {
                 // Directory is missing
                 yield break;
             }
+
+            var pathResolver = new VersionFolderPathResolver(root);
 
             foreach (var versionDir in GetDirectoriesSafe(idRoot, log))
             {

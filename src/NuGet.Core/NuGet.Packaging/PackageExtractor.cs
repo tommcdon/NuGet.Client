@@ -516,17 +516,22 @@ namespace NuGet.Packaging
                             }
                             catch (SignatureException)
                             {
-                                try
+                                for (var i = 0; i < 20; i++)
                                 {
-                                    DeleteTargetAndTempPaths(targetPath, targetTempNupkg);
-                                }
-                                catch (IOException ex)
-                                {
-                                    logger.LogWarning(string.Format(
-                                        CultureInfo.CurrentCulture,
-                                        Strings.ErrorUnableToDeleteFile,
-                                        targetTempNupkg,
-                                        ex.Message));
+                                    try
+                                    {
+                                        DeleteTargetAndTempPaths(targetPath, targetTempNupkg);
+                                        break;
+                                    }
+                                    catch (IOException ex)
+                                    {
+                                        logger.LogWarning(string.Format(
+                                                    CultureInfo.CurrentCulture,
+                                                    Strings.ErrorUnableToDeleteFile,
+                                                    targetTempNupkg,
+                                                    ex.Message));
+                                        Thread.Sleep(500);
+                                    }
                                 }
 
                                 telemetry.TelemetryEvent = new PackageExtractionTelemetryEvent(
@@ -545,17 +550,22 @@ namespace NuGet.Packaging
                             }
                             else
                             {
-                                try
+                                for (var i = 0; i < 20; i++)
                                 {
-                                    File.Delete(targetTempNupkg);
-                                }
-                                catch (IOException ex)
-                                {
-                                    logger.LogWarning(string.Format(
-                                        CultureInfo.CurrentCulture,
-                                        Strings.ErrorUnableToDeleteFile,
-                                        targetTempNupkg,
-                                        ex.Message));
+                                    try
+                                    {
+                                        File.Delete(targetTempNupkg);
+                                        break;
+                                    }
+                                    catch (IOException ex)
+                                    {
+                                        logger.LogWarning(string.Format(
+                                                    CultureInfo.CurrentCulture,
+                                                    Strings.ErrorUnableToDeleteFile,
+                                                    targetTempNupkg,
+                                                    ex.Message));
+                                        Thread.Sleep(500);
+                                    }
                                 }
                             }
 
@@ -714,20 +724,27 @@ namespace NuGet.Packaging
                                 }
                                 catch (SignatureException)
                                 {
-                                    try
+                                    for (var i = 0; i < 20; i++)
                                     {
-                                        // Dispose of it now because it is holding a lock on the temporary .nupkg file.
-                                        packageDownloader.Dispose();
+                                        try
+                                        {
+                                            if (i == 0)
+                                            {
+                                                // Dispose of it now because it is holding a lock on the temporary .nupkg file.
+                                                packageDownloader.Dispose();
+                                            }
 
-                                        DeleteTargetAndTempPaths(targetPath, targetTempNupkg);
-                                    }
-                                    catch (IOException ex)
-                                    {
-                                        logger.LogWarning(string.Format(
-                                            CultureInfo.CurrentCulture,
-                                            Strings.ErrorUnableToDeleteFile,
-                                            targetTempNupkg,
-                                            ex.Message));
+                                            DeleteTargetAndTempPaths(targetPath, targetTempNupkg);
+                                            break;
+                                        }
+                                        catch (IOException ex)
+                                        {
+                                            logger.LogWarning(string.Format(
+                                                CultureInfo.CurrentCulture,
+                                                Strings.ErrorUnableToDeleteFile,
+                                                targetTempNupkg,
+                                                ex.Message));
+                                        }
                                     }
 
                                     telemetry.TelemetryEvent = new PackageExtractionTelemetryEvent(
@@ -813,17 +830,22 @@ namespace NuGet.Packaging
                             }
                             else
                             {
-                                try
+                                for (var i = 0; i < 20; i++)
                                 {
-                                    File.Delete(targetTempNupkg);
-                                }
-                                catch (IOException ex)
-                                {
-                                    logger.LogWarning(string.Format(
-                                        CultureInfo.CurrentCulture,
-                                        Strings.ErrorUnableToDeleteFile,
-                                        targetTempNupkg,
-                                        ex.Message));
+                                    try
+                                    {
+                                        File.Delete(targetTempNupkg);
+                                        break;
+                                    }
+                                    catch (IOException ex)
+                                    {
+                                        logger.LogWarning(string.Format(
+                                            CultureInfo.CurrentCulture,
+                                            Strings.ErrorUnableToDeleteFile,
+                                            targetTempNupkg,
+                                            ex.Message));
+                                        Thread.Sleep(500);
+                                    }
                                 }
                             }
 
